@@ -45,3 +45,12 @@ test('switching to rock paper scissors renders the throw arena', async ({ page }
   await page.getByRole('button', { name: 'Throw Rock' }).click();
   await expect(page.getByText(/locked in/i)).toBeVisible();
 });
+
+test('the game chosen in the lobby carries into the match', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('radio', { name: /Connect Four/i }).click();
+  await page.getByRole('button', { name: /Pass & play/i }).click();
+  await expect(page.getByRole('grid', { name: 'Connect four board' })).toBeVisible();
+  await page.getByRole('button', { name: 'Drop into column 4' }).click();
+  await expect(page.getByRole('gridcell', { name: /Column 4, row 6: p1/ })).toBeVisible();
+});

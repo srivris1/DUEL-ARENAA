@@ -38,6 +38,19 @@ describe('session reducer', () => {
     expect(joined.seat).toBe('p2');
   });
 
+  it('keeps the chosen game and match length when a mode starts', () => {
+    let state = createSessionState();
+    state = sessionReducer(state, { type: 'applyMatch', action: { type: 'SET_GAME', gameId: 'connect4' } });
+    state = sessionReducer(state, {
+      type: 'applyMatch',
+      action: { type: 'SET_BEST_OF', bestOf: 5 },
+    });
+    const local = sessionReducer(state, { type: 'setMode', mode: 'local' });
+    expect(local.match.gameId).toBe('connect4');
+    expect(local.match.bestOf).toBe(5);
+    expect(local.match.scores).toEqual({ p1: 0, p2: 0, draws: 0 });
+  });
+
   it('applies local match actions and adopts remote snapshots', () => {
     const local = sessionReducer(createSessionState(), {
       type: 'applyMatch',

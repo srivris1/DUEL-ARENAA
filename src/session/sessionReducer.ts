@@ -63,9 +63,11 @@ function appendChat(lines: readonly ChatLine[], line: ChatLine): readonly ChatLi
 
 export function sessionReducer(state: SessionState, action: SessionAction): SessionState {
   switch (action.type) {
-    case 'setMode':
+    case 'setMode': {
+      const next = createSessionState({ mode: action.mode });
       return {
-        ...createSessionState({ mode: action.mode }),
+        ...next,
+        match: createMatch(state.match.gameId, state.match.bestOf),
         code: action.code ?? null,
         seat: action.seat ?? 'p1',
         names: state.names,
@@ -73,6 +75,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         difficulty: state.difficulty,
         aiSeat: state.mode === 'local' ? state.aiSeat : null,
       };
+    }
     case 'conn':
       return { ...state, conn: action.status, error: action.status === 'failed' ? state.error : null };
     case 'error':
