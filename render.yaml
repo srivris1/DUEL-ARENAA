@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: duel-arena-signal
+    runtime: node
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PEER_PATH
+        value: /duel-arena
+      - key: PEER_KEY
+        generateValue: true
