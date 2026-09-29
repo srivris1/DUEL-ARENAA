@@ -15,6 +15,14 @@ export default defineConfig({
     port: 4180,
     strictPort: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/app.js',
+        assetFileNames: 'assets/[name][extname]',
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: false,
