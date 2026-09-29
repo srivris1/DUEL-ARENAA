@@ -46,6 +46,23 @@ test('switching to rock paper scissors renders the throw arena', async ({ page }
   await expect(page.getByText(/locked in/i)).toBeVisible();
 });
 
+test('the message box stays usable on a phone screen', async ({ page }) => {
+  await page.goto('/#/local');
+  await expect(page.getByRole('grid')).toBeVisible();
+  const input = page.getByRole('textbox', { name: 'Message' });
+  const box = await input.boundingBox();
+  expect(box?.width ?? 0).toBeGreaterThan(200);
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+  const emote = page.getByRole('button', { name: 'Send 🔥' });
+  const emoteBox = await emote.boundingBox();
+  expect(emoteBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+  await input.fill('gg');
+  await input.press('Enter');
+  await expect(page.getByText('gg')).toBeVisible();
+});
+
 test('the game chosen in the lobby carries into the match', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('radio', { name: /Connect Four/i }).click();

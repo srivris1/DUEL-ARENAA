@@ -48,21 +48,21 @@ export function ChatPanel({ chat, accent, onSend }: Props) {
           </p>
         ))}
       </div>
-      <div className="flex items-center gap-2 border-t border-divider px-3 py-2">
-        <div className="flex gap-1">
+      <div className="border-t border-divider px-3 py-2.5">
+        <div className="mb-2 flex items-center gap-1 overflow-x-auto" role="group" aria-label="Quick reactions">
           {EMOJIS.map((emoji) => (
             <button
               key={emoji}
               type="button"
               aria-label={`Send ${emoji}`}
               onClick={() => onSend(emoji)}
-              className="rounded-lg px-1.5 py-1 text-base hover:bg-surface-2"
+              className="min-h-11 min-w-11 shrink-0 rounded-lg px-2 text-base hover:bg-surface-2"
             >
               {emoji}
             </button>
           ))}
         </div>
-        <div className="ml-auto flex flex-1 items-center gap-2">
+        <div className="flex items-center gap-2">
           <label className="sr-only" htmlFor="chat-input">
             Message
           </label>
@@ -74,14 +74,16 @@ export function ChatPanel({ chat, accent, onSend }: Props) {
               if (event.key === 'Enter') submit();
             }}
             maxLength={160}
-            placeholder="Message"
-            className="w-full rounded-lg border border-boundary bg-surface-2 px-3 py-2 text-sm"
+            placeholder="Type a message"
+            autoComplete="off"
+            enterKeyHint="send"
+            className="min-h-11 min-w-0 flex-1 rounded-lg border border-boundary bg-surface-2 px-3 py-2.5 text-base sm:text-sm"
           />
           <button
             type="button"
             onClick={submit}
             aria-label="Send message"
-            className="btn btn-primary !min-h-10 !px-3"
+            className="btn btn-primary !min-h-11 !px-3.5"
           >
             <Send size={16} aria-hidden />
           </button>
