@@ -7,7 +7,7 @@ This is a project I built to solve a problem statement that asked for a browser-
 - 🔴🟡 **Connect Four**
 - ✂️🪨 **Rock Paper Scissors**
 
-You can play it live right now! 👉 **[Play DUEL-ARENA Here](https://srivris1.github.io/VALTREAK/)**
+You can play it live right now! 👉 **[Play DUEL-ARENA Here](https://srivris1.github.io/DUEL-ARENAA/)**
 
 ## The Tech Stack
 I wanted this to be fast and modern, so here is what I used to build it:
@@ -34,8 +34,8 @@ If you want to pull this down and run it on your own machine, it's super simple.
 
 First, clone the repo:
 ```bash
-git clone https://github.com/srivris1/VALTREAK.git
-cd VALTREAK
+git clone https://github.com/srivris1/DUEL-ARENAA.git
+cd DUEL-ARENAA
 ```
 
 Install the dependencies:
