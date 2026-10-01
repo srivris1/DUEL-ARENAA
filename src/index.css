@@ -79,8 +79,6 @@ body {
 button {
   font: inherit;
   color: inherit;
-  background: none;
-  border: none;
   cursor: pointer;
 }
 
@@ -98,14 +96,12 @@ textarea {
 
 .surface-card {
   background: color-mix(in srgb, var(--surface) 88%, transparent);
-  border: 1px solid var(--boundary);
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
 }
 
 .pill {
   border-radius: 999px;
-  border: 1px solid var(--boundary);
   padding: 0.4rem 0.85rem;
   font-size: 0.8rem;
   font-weight: 600;

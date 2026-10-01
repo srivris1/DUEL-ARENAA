@@ -53,7 +53,7 @@ export function useSessionValue(): SessionValue {
   const [state, dispatch] = useReducer(sessionReducer, undefined, () => createSessionState());
   const [playerName, setNameState] = useState(readStoredName);
   const roomRef = useRef<Room | null>(null);
-  const sentRef = useRef<{ match: SessionState['match']; chat: unknown } | null>(null);
+  const sentRef = useRef<{ match: SessionState['match']; chat: unknown; names: unknown } | null>(null);
   const stateRef = useRef(state);
   const currentNamesRef = useRef(state.names);
   const currentSeatRef = useRef(state.seat);
@@ -95,11 +95,16 @@ export function useSessionValue(): SessionValue {
       switch (message.t) {
         case 'hello': {
           const author = message.name.trim().slice(0, 18) || 'Guest';
+          const newNames = { ...snapshot.names, p2: author };
           dispatch({
             type: 'setNames',
-            names: { ...snapshot.names, p2: author },
+            names: newNames,
           });
           dispatch({ type: 'banner', text: `${author} joined the room` });
+          
+          if (roomRef.current) {
+             roomRef.current.send({ t: 'names', names: newNames } satisfies ServerMessage);
+          }
           break;
         }
         case 'move':
@@ -329,10 +334,22 @@ export function useSessionValue(): SessionValue {
 
   useEffect(() => {
     if (state.mode !== 'host') return;
-    if (sentRef.current?.match === state.match) return;
-    sentRef.current = { match: state.match, chat: state.chat };
-    roomRef.current?.send({ t: 'state', state: state.match, chat: state.chat } satisfies ServerMessage);
-  }, [state.mode, state.match, state.chat]);
+    
+    const matchChanged = sentRef.current?.match !== state.match;
+    const chatChanged = sentRef.current?.chat !== state.chat;
+    const namesChanged = sentRef.current?.names !== state.names;
+    
+    if (!matchChanged && !chatChanged && !namesChanged) return;
+    
+    sentRef.current = { match: state.match, chat: state.chat, names: state.names };
+    
+    if (matchChanged || chatChanged) {
+      roomRef.current?.send({ t: 'state', state: state.match, chat: state.chat } satisfies ServerMessage);
+    }
+    if (namesChanged) {
+      roomRef.current?.send({ t: 'names', names: state.names } satisfies ServerMessage);
+    }
+  }, [state.mode, state.match, state.chat, state.names]);
 
   useEffect(() => {
     const aiSeat = state.aiSeat;

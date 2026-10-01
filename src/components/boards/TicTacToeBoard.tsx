@@ -56,7 +56,7 @@ export function TicTacToeBoard({ state, highlight, locked, accent, onMove }: Pro
               winning ? 'border-accent bg-accent-tint' : 'border-boundary bg-surface'
             } ${value === null && !locked ? 'hover:border-accent' : ''} ${locked ? 'cursor-default' : ''}`}
           >
-            <span className={accent(value)}>{markFor(value)}</span>
+            <span className={`${accent(value)} flex h-full w-full items-center justify-center`}>{markFor(value)}</span>
             {winning && (
               <motion.span
                 layoutId={`win-${index}`}

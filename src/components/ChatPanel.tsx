@@ -28,7 +28,7 @@ export function ChatPanel({ chat, accent, onSend }: Props) {
   }
 
   return (
-    <section className="surface-card flex min-h-0 flex-1 flex-col rounded-2xl">
+    <section className="surface-card border border-boundary flex min-h-0 flex-1 flex-col rounded-2xl">
       <header className="flex items-center justify-between border-b border-divider px-4 py-3">
         <h2 className="text-sm font-semibold text-ink">Trash talk</h2>
         <span className="text-[11px] text-muted">synced live</span>

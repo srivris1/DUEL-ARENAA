@@ -59,9 +59,14 @@ export function ConnectFourBoard({ state, highlight, locked, accent, onMove }: P
                   key={column}
                   role="gridcell"
                   aria-label={`Column ${column + 1}, row ${C4_ROWS - row}: ${value ?? 'empty'}`}
-                  className={`flex aspect-square items-center justify-center rounded-full border ${
+                  className={`flex aspect-square items-center justify-center rounded-full border transition-colors ${
                     winning ? 'border-accent bg-accent-tint' : 'border-boundary bg-surface'
-                  }`}
+                  } ${!locked && c4CanDrop(state, column) ? 'cursor-pointer hover:border-accent' : ''}`}
+                  onClick={() => {
+                    if (!locked && c4CanDrop(state, column)) {
+                      onMove(column);
+                    }
+                  }}
                 >
                   <span className={accent(value)}>{disc(value)}</span>
                 </div>

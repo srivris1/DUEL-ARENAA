@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Bot, Copy, Link2, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, Bot, Copy, Link2, Sparkles, Users, Moon, Sun } from 'lucide-react';
 import { useSession } from '../session/useSession';
 import { normalizeCode, randomCode } from '../net/room';
 import { navigate } from '../hooks/useHashRoute';
@@ -9,7 +9,12 @@ import type { BestOf } from '../games/types';
 
 const BEST_OF_OPTIONS: readonly BestOf[] = [1, 3, 5, 7];
 
-export function Lobby() {
+type Props = {
+  readonly onThemeToggle: () => void;
+  readonly theme: 'dark' | 'light';
+};
+
+export function Lobby({ onThemeToggle, theme }: Props) {
   const { state, playerName, setPlayerName, selectGame, selectBestOf } = useSession();
   const [joinCode, setJoinCode] = useState('');
   const [customCode, setCustomCode] = useState('');
@@ -28,9 +33,19 @@ export function Lobby() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pb-16 pt-8 sm:px-6 lg:px-8">
       <header className="animate-float-in flex flex-col gap-3">
-        <span className="pill inline-flex w-fit items-center gap-2 border-accent text-accent">
-          <Sparkles size={14} aria-hidden /> Three games · one room code
-        </span>
+        <div className="flex justify-between items-start">
+          <span className="pill border inline-flex w-fit items-center gap-2 border-accent text-accent">
+            <Sparkles size={14} aria-hidden /> Three games · one room code
+          </span>
+          <button
+            type="button"
+            className="btn btn-ghost !min-h-10 !px-3 text-sm"
+            onClick={onThemeToggle}
+          >
+            {theme === 'dark' ? <Sun size={16} aria-hidden /> : <Moon size={16} aria-hidden />}
+            Theme
+          </button>
+        </div>
         <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-ink">
           Duel Arena
         </h1>
@@ -40,7 +55,7 @@ export function Lobby() {
         </p>
       </header>
 
-      <section className="surface-card animate-float-in rounded-3xl p-5 sm:p-6">
+      <section className="surface-card border border-boundary animate-float-in rounded-3xl p-5 sm:p-6">
         <label className="block text-sm font-medium text-muted" htmlFor="player-name">
           Your display name
         </label>
@@ -58,7 +73,7 @@ export function Lobby() {
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="surface-card rounded-3xl p-5 sm:p-6"
+          className="surface-card border border-boundary rounded-3xl p-5 sm:p-6"
         >
           <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">
             <Users size={20} className="text-p1" aria-hidden /> Host a live room
@@ -92,7 +107,7 @@ export function Lobby() {
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="surface-card rounded-3xl p-5 sm:p-6"
+          className="surface-card border border-boundary rounded-3xl p-5 sm:p-6"
         >
           <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">
             <Link2 size={20} className="text-p2" aria-hidden /> Join with a code
@@ -120,7 +135,7 @@ export function Lobby() {
         </motion.section>
       </div>
 
-      <section className="surface-card rounded-3xl p-5 sm:p-6">
+      <section className="surface-card border border-boundary rounded-3xl p-5 sm:p-6">
         <h2 className="text-lg font-semibold text-ink">Choose your arena</h2>
         <p className="mt-1 text-sm text-muted">
           You can switch games any time. Both players see the same board.
@@ -135,10 +150,10 @@ export function Lobby() {
               key={option}
               type="button"
               onClick={() => selectBestOf(option)}
-              className={`pill transition-colors ${
+              className={`pill border transition-colors ${
                 state.match.bestOf === option
                   ? 'border-accent bg-accent-tint text-accent'
-                  : 'text-muted hover:border-accent'
+                  : 'border-boundary text-muted hover:border-accent'
               }`}
               aria-pressed={state.match.bestOf === option}
             >
@@ -154,7 +169,7 @@ export function Lobby() {
           onClick={() => {
             navigate('/local');
           }}          whileHover={{ y: -3 }}
-          className="surface-card rounded-3xl p-5 text-left"
+          className="surface-card border border-boundary rounded-3xl p-5 text-left"
         >
           <h3 className="flex items-center gap-2 font-semibold text-ink">
             <Copy size={18} className="text-accent" aria-hidden /> Pass &amp; play
@@ -167,7 +182,7 @@ export function Lobby() {
             navigate('/local/bot');
           }}
           whileHover={{ y: -3 }}
-          className="surface-card rounded-3xl p-5 text-left"
+          className="surface-card border border-boundary rounded-3xl p-5 text-left"
         >
           <h3 className="flex items-center gap-2 font-semibold text-ink">
             <Bot size={18} className="text-p1" aria-hidden /> Train vs Duel Bot

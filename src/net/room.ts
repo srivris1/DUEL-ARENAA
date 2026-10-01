@@ -43,7 +43,7 @@ declare global {
 function broker(): SignalConfig {
   const env = import.meta.env;
   const runtime = typeof window === 'undefined' ? undefined : window.__DUEL_SIGNAL__;
-  const host = runtime?.host ?? env.VITE_PEER_HOST;
+  const host = runtime?.host ?? env.VITE_PEER_HOST ?? window.location.hostname;
   if (!host) return { secure: true };
   return {
     host,
@@ -127,10 +127,15 @@ export function hostRoom(code: string, handlers: RoomHandlers): Room {
   peer.on('open', () => handlers.onStatus('waiting'));
   peer.on('connection', (incoming) => {
     connection = incoming;
-    incoming.on('open', () => {
+    const handleOpen = () => {
       handlers.onStatus('connected');
       handlers.onPeerConnected(incoming);
-    });
+    };
+    if (incoming.open) {
+      handleOpen();
+    } else {
+      incoming.on('open', handleOpen);
+    }
     incoming.on('data', (payload) => handlers.onMessage(payload as WireMessage));
     incoming.on('close', () => {
       connection = null;

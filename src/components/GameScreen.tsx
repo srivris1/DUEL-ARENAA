@@ -83,7 +83,7 @@ export function GameScreen({
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 pb-10 pt-5 sm:px-6">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pb-10 pt-5 sm:px-6">
       <canvas ref={confettiRef} className="pointer-events-none fixed inset-0 z-50 h-full w-full" aria-hidden />
 
       <header className="flex flex-wrap items-center justify-between gap-3">
@@ -136,8 +136,11 @@ export function GameScreen({
 
       <ScoreHeader match={match} names={names} mySeat={seat} accent={accent} opponentPresent={opponentPresent} />
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <main className="surface-card grid-paper flex flex-col items-center gap-5 rounded-3xl px-4 py-6 sm:px-6">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[320px_minmax(0,1fr)_320px]">
+        {/* Spacer column to perfectly center the main game board on wide screens */}
+        <div className="hidden xl:block" aria-hidden />
+
+        <main className="surface-card border border-boundary grid-paper flex flex-col items-center gap-5 rounded-3xl px-4 py-6 sm:px-6">
           {match.gameId === 'tictactoe' && (
             <TicTacToeBoard
               state={match.game as TttState}
@@ -213,23 +216,23 @@ export function GameScreen({
         </main>
 
         <aside className="flex min-h-0 flex-col gap-4">
-          <section className="surface-card rounded-2xl p-4">
+          <section className="surface-card border border-boundary rounded-2xl p-4">
             <h2 className="text-sm font-semibold text-ink">Switch game</h2>
             <p className="mt-1 text-[11px] text-muted">
-              {isAuthoritative(state) ? 'Your choice, applied for both players.' : 'The host picks the game.'}
+              Any player can choose the game.
             </p>
             <div className="mt-3">
               <GamePicker
                 compact
                 selected={match.gameId}
                 onSelect={onSelectGame}
-                disabled={!isAuthoritative(state)}
+                disabled={false}
               />
             </div>
           </section>
 
           {state.mode === 'local' && state.aiSeat && (
-            <section className="surface-card rounded-2xl p-4">
+            <section className="surface-card border border-boundary rounded-2xl p-4">
               <h2 className="text-sm font-semibold text-ink">Duel Bot</h2>
               <div className="mt-3 flex gap-2">
                 {(['casual', 'sharp'] as const).map((level) => (
@@ -237,10 +240,10 @@ export function GameScreen({
                     key={level}
                     type="button"
                     onClick={() => onDifficulty(level)}
-                    className={`pill flex-1 ${
+                    className={`pill border flex-1 ${
                       state.difficulty === level
                         ? 'border-accent bg-accent-tint text-accent'
-                        : 'text-muted hover:border-accent'
+                        : 'border-boundary text-muted hover:border-accent'
                     }`}
                     aria-pressed={state.difficulty === level}
                   >

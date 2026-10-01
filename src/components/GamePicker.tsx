@@ -32,13 +32,24 @@ export function GamePicker({ selected, onSelect, disabled = false, compact = fal
             onClick={() => onSelect(game.id)}
             whileHover={disabled ? undefined : { y: -3 }}
             whileTap={disabled ? undefined : { scale: 0.97 }}
-            className={`surface-card rounded-2xl p-4 text-left transition-colors ${
+            className={`surface-card border rounded-2xl p-4 text-left transition-colors ${
               active ? 'border-accent' : 'border-boundary'
             } ${disabled ? 'opacity-50' : ''}`}
           >
-            <span className="flex items-center gap-2">
-              <Icon size={compact ? 18 : 22} className={active ? 'text-accent' : 'text-muted'} aria-hidden />
-              <span className="font-semibold text-ink">{game.name}</span>
+            <span className={`flex ${compact ? 'flex-col items-center justify-center gap-2 text-center' : 'items-center gap-3'}`}>
+              <span className="relative inline-flex">
+                <Icon size={compact ? 24 : 22} className={active ? 'text-accent' : 'text-muted'} aria-hidden />
+                {active && (
+                  <motion.span
+                    layoutId="activeGameDot"
+                    className="absolute -right-1.5 -top-1.5 h-3 w-3 rounded-full bg-accent shadow-[0_0_8px_var(--accent)]"
+                    aria-hidden
+                  />
+                )}
+              </span>
+              <span className={`font-semibold text-ink ${compact ? 'text-[11px] leading-tight' : ''}`}>
+                {game.name}
+              </span>
             </span>
             {!compact && <span className="mt-1 block text-xs text-muted">{game.tagline}</span>}
           </motion.button>

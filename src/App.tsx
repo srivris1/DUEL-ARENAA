@@ -40,7 +40,14 @@ function Arena() {
     else leave();
   }, [key, route, host, join, startLocal, leave]);
 
-  if (route.view === 'menu') return <Lobby />;
+  if (route.view === 'menu') {
+    return (
+      <Lobby
+        onThemeToggle={() => setTheme((previous) => (previous === 'dark' ? 'light' : 'dark'))}
+        theme={theme}
+      />
+    );
+  }
 
   return (
     <GameScreen

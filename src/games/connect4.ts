@@ -56,8 +56,8 @@ const DIRECTIONS = [
 ] as const;
 
 function lineAt(state: C4State, column: number, row: number, seat: Seat): number[] {
-  const cells: number[] = [];
   for (const [dc, dr] of DIRECTIONS) {
+    const cells: number[] = [];
     for (const sign of [1, -1] as const) {
       let c = column + dc * sign;
       let r = row + dr * sign;
@@ -67,9 +67,12 @@ function lineAt(state: C4State, column: number, row: number, seat: Seat): number
         r += dr * sign;
       }
     }
+    cells.push(cellIndex(column, row));
+    if (cells.length >= 4) {
+      return cells;
+    }
   }
-  cells.push(cellIndex(column, row));
-  return cells;
+  return [];
 }
 
 export function c4Evaluate(state: C4State): RoundResult {

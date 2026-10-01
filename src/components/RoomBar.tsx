@@ -51,7 +51,7 @@ export function RoomBar({ code, conn, isHost, onLeave }: Props) {
   }
 
   return (
-    <div className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3">
+    <div className="surface-card border border-boundary flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3">
       <div className="flex items-center gap-3">
         <Radio
           size={18}
