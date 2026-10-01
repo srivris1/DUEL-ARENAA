@@ -28,4 +28,15 @@ describe('App', () => {
       await screen.findByRole('gridcell', { name: /row 2, column 2: p1/i }),
     ).toBeInTheDocument();
   });
+
+  it('navigates to room on entering join code', async () => {
+    const user = userEvent.setup();
+    window.location.hash = '#/';
+    render(<App />);
+    const joinInput = screen.getByLabelText(/Join room code/i);
+    await user.type(joinInput, 'TESTX');
+    const joinBtn = screen.getByRole('button', { name: /Join/i });
+    await user.click(joinBtn);
+    expect(window.location.hash).toBe('#/join/TESTX');
+  });
 });

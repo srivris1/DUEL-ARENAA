@@ -168,6 +168,30 @@ export function useSessionValue(): SessionValue {
     sentRef.current = null;
   }, []);
 
+  const join = useCallback(
+    (code: string) => {
+      closeRoom();
+      const roomCode = code.toUpperCase();
+      if (typeof window !== 'undefined' && window.location.hash !== `#/join/${roomCode}`) {
+        window.location.hash = `#/join/${roomCode}`;
+      }
+      dispatch({ type: 'setMode', mode: 'guest', code: roomCode, seat: 'p2' });
+      dispatch({ type: 'setNames', names: { p1: 'Host', p2: playerName } });
+      dispatch({ type: 'conn', status: 'connecting' });
+      roomRef.current = joinRoom(roomCode, {
+        onStatus: (status) => dispatch({ type: 'conn', status }),
+        onMessage: handleServerMessage,
+        onPeerConnected: (connection) => {
+          dispatch({ type: 'conn', status: 'connected' });
+          connection.send({ t: 'hello', name: playerName } satisfies ClientMessage);
+        },
+        onPeerDisconnected: () => dispatch({ type: 'conn', status: 'closed' }),
+        onError: (err) => dispatch({ type: 'error', message: err.message }),
+      });
+    },
+    [closeRoom, handleServerMessage, playerName],
+  );
+
   const host = useCallback(
     (code?: string) => {
       closeRoom();
@@ -197,32 +221,17 @@ export function useSessionValue(): SessionValue {
           dispatch({ type: 'conn', status: 'waiting' });
           dispatch({ type: 'banner', text: 'Opponent left the room' });
         },
-        onError: (message) => dispatch({ type: 'error', message }),
+        onError: (err) => {
+          if (err.type === 'unavailable-id') {
+            join(roomCode);
+            return;
+          }
+          dispatch({ type: 'error', message: err.message });
+        },
       });
       dispatch({ type: 'conn', status: 'connecting' });
     },
-    [closeRoom, handleClientMessage, playerName],
-  );
-
-  const join = useCallback(
-    (code: string) => {
-      closeRoom();
-      const roomCode = code.toUpperCase();
-      dispatch({ type: 'setMode', mode: 'guest', code: roomCode, seat: 'p2' });
-      dispatch({ type: 'setNames', names: { p1: 'Host', p2: playerName } });
-      dispatch({ type: 'conn', status: 'connecting' });
-      roomRef.current = joinRoom(roomCode, {
-        onStatus: (status) => dispatch({ type: 'conn', status }),
-        onMessage: handleServerMessage,
-        onPeerConnected: () => undefined,
-        onPeerDisconnected: () => dispatch({ type: 'conn', status: 'closed' }),
-        onError: (message) => dispatch({ type: 'error', message }),
-      });
-      window.setTimeout(() => {
-        roomRef.current?.send({ t: 'hello', name: playerName } satisfies ClientMessage);
-      }, 900);
-    },
-    [closeRoom, handleServerMessage, playerName],
+    [closeRoom, handleClientMessage, join, playerName],
   );
 
   const startLocal = useCallback(

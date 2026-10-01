@@ -74,9 +74,9 @@ export function Lobby() {
               <input
                 id="custom-code"
                 value={customCode}
-                onChange={(event) => setCustomCode(event.target.value.toUpperCase())}
+                onChange={(event) => setCustomCode(normalizeCode(event.target.value))}
                 maxLength={6}
-                placeholder="auto"
+                placeholder="AUTO"
                 className="w-28 rounded-xl border border-boundary bg-surface-2 px-4 py-3 text-center font-semibold tracking-[0.3em] text-ink uppercase"
               />
               <button type="button" className="btn btn-primary flex-1" onClick={createRoom}>
@@ -100,7 +100,8 @@ export function Lobby() {
           <p className="mt-1 text-sm text-muted">Ask your host for the five-letter room code.</p>
           <div className="mt-4 flex gap-2">
             <input
-              aria-label="Room code"
+              id="join-code"
+              aria-label="Join room code"
               value={joinCode}
               onChange={(event) => setJoinCode(normalizeCode(event.target.value))}
               maxLength={6}

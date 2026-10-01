@@ -4,12 +4,17 @@ import type { WireMessage } from './protocol';
 
 export type RoomStatus = 'connecting' | 'waiting' | 'connected' | 'closed' | 'failed';
 
+export type RoomError = {
+  readonly type: string;
+  readonly message: string;
+};
+
 export type RoomHandlers = {
   onStatus: (status: RoomStatus) => void;
   onMessage: (message: WireMessage) => void;
   onPeerConnected: (connection: DataConnection) => void;
   onPeerDisconnected: () => void;
-  onError: (message: string) => void;
+  onError: (error: RoomError) => void;
 };
 
 export type Room = {
@@ -90,8 +95,10 @@ function describeError(error: { type?: string; message?: string }): string {
 }
 
 function attach(peer: Peer, handlers: RoomHandlers, timeoutMs: number): void {
-  peer.on('error', (error) => {
-    handlers.onError(describeError(error as { type?: string; message?: string }));
+  peer.on('error', (rawError) => {
+    const errorObj = (rawError || {}) as { type?: string; message?: string };
+    const type = errorObj.type ?? 'unknown';
+    handlers.onError({ type, message: describeError(errorObj) });
     handlers.onStatus('failed');
   });
 
@@ -99,9 +106,11 @@ function attach(peer: Peer, handlers: RoomHandlers, timeoutMs: number): void {
 
   const timer = setTimeout(() => {
     if (!peer.open) {
-      handlers.onError(
-        'Connection timed out. The signalling server may be blocked on this network — try another network or host your own server.',
-      );
+      handlers.onError({
+        type: 'network',
+        message:
+          'Connection timed out. The signalling server may be blocked on this network — try another network or host your own server.',
+      });
       handlers.onStatus('failed');
     }
   }, timeoutMs);
@@ -128,7 +137,13 @@ export function hostRoom(code: string, handlers: RoomHandlers): Room {
       handlers.onStatus('waiting');
       handlers.onPeerDisconnected();
     });
-    incoming.on('error', (error) => handlers.onError(error.message));
+    incoming.on('error', (rawError) => {
+      const errorObj = (rawError || {}) as { type?: string; message?: string };
+      handlers.onError({
+        type: errorObj.type ?? 'unknown',
+        message: errorObj.message ?? 'Connection error',
+      });
+    });
   });
 
   return {
@@ -153,10 +168,21 @@ export function joinRoom(code: string, handlers: RoomHandlers): Room {
       reliable: true,
       serialization: 'json',
     });
-    connection.on('open', () => handlers.onStatus('connected'));
+    connection.on('open', () => {
+      handlers.onStatus('connected');
+      if (connection) {
+        handlers.onPeerConnected(connection);
+      }
+    });
     connection.on('data', (payload) => handlers.onMessage(payload as WireMessage));
     connection.on('close', () => handlers.onStatus('closed'));
-    connection.on('error', (error) => handlers.onError(error.message));
+    connection.on('error', (rawError) => {
+      const errorObj = (rawError || {}) as { type?: string; message?: string };
+      handlers.onError({
+        type: errorObj.type ?? 'unknown',
+        message: errorObj.message ?? 'Connection error',
+      });
+    });
   });
 
   return {
