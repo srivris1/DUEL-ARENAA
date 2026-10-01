@@ -137,7 +137,6 @@ export function GameScreen({
       <ScoreHeader match={match} names={names} mySeat={seat} accent={accent} opponentPresent={opponentPresent} />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[320px_minmax(0,1fr)_320px]">
-        {/* Spacer column to perfectly center the main game board on wide screens */}
         <div className="hidden xl:block" aria-hidden />
 
         <main className="surface-card border border-boundary grid-paper flex flex-col items-center gap-5 rounded-3xl px-4 py-6 sm:px-6">
