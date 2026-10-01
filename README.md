@@ -1,13 +1,13 @@
-# VALTREAK 🎮
+# DUEL-ARENA🎮
 
-Hey everyone! Welcome to **VALTREAK**. 
+Hey everyone! Welcome to **DUEL-ARENA**. 
 
 This is a project I built to solve a problem statement that asked for a browser-based multiplayer game. Instead of just building one game and calling it a day, I decided to build a whole mini-arena where you can play three classic games:
 - ❌⭕ **Tic-Tac-Toe**
 - 🔴🟡 **Connect Four**
 - ✂️🪨 **Rock Paper Scissors**
 
-You can play it live right now! 👉 **[Play VALTREAK Here](https://srivris1.github.io/VALTREAK/)**
+You can play it live right now! 👉 **[Play DUEL-ARENA Here](https://srivris1.github.io/VALTREAK/)**
 
 ## The Tech Stack
 I wanted this to be fast and modern, so here is what I used to build it:
